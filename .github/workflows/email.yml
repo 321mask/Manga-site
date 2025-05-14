@@ -1,0 +1,28 @@
+name: PR Email Notification to Gmail
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send email
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.SMTP_USER }}
+        password: ${{ secrets.SMTP_PASS }}
+        subject: "📬 New PR: ${{ github.event.pull_request.title }}"
+        to: mask390@gmail.com
+        from: GitHub Actions <${{ secrets.SMTP_USER }}>
+        body: |
+          A pull request was just submitted to main.
+
+          ➤ Title: ${{ github.event.pull_request.title }}
+          ➤ Author: ${{ github.event.pull_request.user.login }}
+          ➤ URL: ${{ github.event.pull_request.html_url }}
